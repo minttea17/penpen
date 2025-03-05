@@ -7,6 +7,7 @@ import database
 import requests
 import random
 import logging
+from tor_control import change_tor_circuit
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
@@ -99,7 +100,7 @@ def introduce():
 
     # If valid, delete pow nonce
     pow_list.remove(nonce)
-
+    change_tor_circuit()
     try:
         response = requests.get(f"http://{address}.onion/hello", 
                                 proxies={'http': 'socks5h://127.0.0.1:9051', 

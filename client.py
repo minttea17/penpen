@@ -8,6 +8,9 @@ import os
 import requests
 import json
 import random
+from stem import Signal
+from stem.control import Controller
+from tor_control import change_tor_circuit
 
 # Difficulty level for the proof-of-work
 DIFFICULTY = 6  # Number of leading zeros required in the hash
@@ -26,6 +29,7 @@ def proof_of_work(nonce_hex, difficulty):
         secret += 1
 
 database.init_db()
+
 
 def run_client():
     while True:
@@ -58,6 +62,7 @@ def run_client():
 
             ready = False
 
+            change_tor_circuit()
             while (len(nodes) != 0 and ready != True):
                 node = random.choice(nodes)
                 nodes.remove(node)
@@ -73,7 +78,8 @@ def run_client():
             if ready != True:
                 print("There's no online nodes available now.\n")
                 continue
-
+            
+            change_tor_circuit()
             # Step 1: Get a secure nonce from the Flask app
             response = requests.get(f'http://{node[0]}.onion/start_pow',
                                     proxies=tor_proxies)
@@ -115,6 +121,7 @@ def run_client():
 
             if option == 1:
                 address = input("Provide node's address: ")
+                change_tor_circuit()
                 try:
                     response = requests.get(f"http://{address}.onion/hello", 
                                             proxies=tor_proxies)
@@ -133,6 +140,7 @@ def run_client():
                 found_nodes = []
                 my_nodes = database.get_nodes()
 
+                change_tor_circuit()
                 for j in range(depth):
                     for i in my_nodes:
                         if i in asked:
