@@ -8,8 +8,6 @@ import os
 import requests
 import json
 import random
-from stem import Signal
-from stem.control import Controller
 from tor_control import change_tor_circuit
 
 # Difficulty level for the proof-of-work
@@ -37,7 +35,7 @@ def run_client():
             print("You need to add at least one node for being able to send messages.")
             print("Choose option 4 to do that.\n")
 
-        print("\nWhat you want to do?")
+        print("\nWhat do you want to do?")
         print("1. Check for bottles")
         print("2. Send the bottle")
         print("3. Manage identity")
